@@ -27,5 +27,5 @@ public class TaskModel {
   @CreationTimestamp
   private LocalDateTime created_at;
 
-  private UUID user_id;
+  private UUID userId;
 }

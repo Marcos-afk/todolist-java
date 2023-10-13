@@ -1,10 +1,12 @@
 package br.com.marcosmelo.todolistjava.tasks.controllers;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +28,7 @@ public class TaskController {
 
     var user_id = request.getAttribute("user_id");
 
-    taskModel.setUser_id((UUID) user_id);
+    taskModel.setUserId((UUID) user_id);
 
     var currentDate = LocalDateTime.now();
     if (currentDate.isAfter(taskModel.getStart_at()) || currentDate.isAfter(taskModel.getEnd_at())) {
@@ -41,4 +43,12 @@ public class TaskController {
 
     return ResponseEntity.ok().build();
   }
+
+  @GetMapping("/")
+  public List<TaskModel> listTasks(HttpServletRequest request) {
+    var user_id = request.getAttribute("user_id");
+    var tasks = this.tasksRepository.findByUserId((UUID) user_id);
+    return tasks;
+  }
+
 }
