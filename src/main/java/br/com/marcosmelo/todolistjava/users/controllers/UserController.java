@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import br.com.marcosmelo.todolistjava.users.models.UserModel;
 import br.com.marcosmelo.todolistjava.users.repositories.IUsersRepository;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/users")
@@ -19,7 +20,7 @@ public class UserController {
   private IUsersRepository usersRepository;
 
   @PostMapping("/")
-  public ResponseEntity<String> createUser(@RequestBody UserModel userModel) {
+  public ResponseEntity<String> createUser(@Valid @RequestBody UserModel userModel) {
     var user = this.usersRepository.findByUsername(userModel.getUsername());
 
     if (user != null) {

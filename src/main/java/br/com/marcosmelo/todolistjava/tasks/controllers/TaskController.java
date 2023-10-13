@@ -19,6 +19,7 @@ import br.com.marcosmelo.todolistjava.tasks.models.TaskModel;
 import br.com.marcosmelo.todolistjava.tasks.repositories.ITasksRepository;
 import br.com.marcosmelo.todolistjava.utils.Utils;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/tasks")
@@ -28,7 +29,7 @@ public class TaskController {
   private ITasksRepository tasksRepository;
 
   @PostMapping("/")
-  public ResponseEntity<String> createTask(@RequestBody TaskModel taskModel, HttpServletRequest request) {
+  public ResponseEntity<String> createTask(@Valid @RequestBody TaskModel taskModel, HttpServletRequest request) {
 
     var user_id = request.getAttribute("user_id");
 
@@ -62,6 +63,10 @@ public class TaskController {
     var user_id = request.getAttribute("user_id");
     var task = this.tasksRepository.findById(id).orElse(null);
 
+    if (task == null) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tarefa não encontrada");
+    }
+
     if (!task.getUserId().equals(user_id)) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
@@ -71,6 +76,7 @@ public class TaskController {
     this.tasksRepository.save(task);
 
     return ResponseEntity.ok().build();
+
   }
 
 }
