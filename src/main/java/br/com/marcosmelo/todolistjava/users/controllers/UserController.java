@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import br.com.marcosmelo.todolistjava.users.models.UserModel;
 import br.com.marcosmelo.todolistjava.users.repositories.IUsersRepository;
 
@@ -24,6 +25,10 @@ public class UserController {
     if (user != null) {
       return ResponseEntity.badRequest().body("Username já está sendo usado na aplicação");
     }
+
+    String passwordHashed = BCrypt.withDefaults().hashToString(12, userModel.getPassword().toCharArray());
+
+    userModel.setPassword(passwordHashed);
 
     this.usersRepository.save(userModel);
     return ResponseEntity.ok().build();
